@@ -1,28 +1,30 @@
-require 'rubygems'  
-require "active_record"
-
-ActiveRecord::Base.establish_connection(  
-:adapter => "mysql2",  
-:host => "127.0.0.1",  
-:database => "students",  
-:password=> '1', 
-:username => 'root'				       
-)  
+require './mycroftmodels'
+require './mkauth' 
   
-class Mkauth < ActiveRecord::Base  
-	def self.table_name
-		"rubyists"
-	end
-end  
+puts 'Iniciando processo de migração de dados'
 
-Mkauth.create(:name => 'Luc Juggery', :city => "Nashville, Tenessee") 
+mk = Mk_sis_cliente.where(cli_ativado: 's', isento: 'nao').where('login not %?', 'rafanet.com')
+puts "Clientes ativos #{mk.count}"
 
-mk = Mkauth.first   
-puts %{#{mk.name}}  
+mk.each do |client|
+	nome = client.nome #
+	cpf = client.cpf_cnpj #
+	endereco = client.endereco  #
+	bairro = client.bairro #
+	cep = client.cep #
+	cidade = client.cidade #
+	estado = client.estado # verificar
+	fone = client.fone #
+	obs = "OBS: #{client.obs} - CAD:#{client.cadastro};" #
+	tipo_conexao = client.tipo 
+	vencimento = client.venc # vai pra link
+	rg = client.rg #
+	celular = client.celular #
+	bloqueado = client.bloqueado # S ou N
+	plano = client.plano
 
-
-class User < ActiveRecord::Base
-	establish_connection  adapter: 'postgresql', host: 'localhost', username: 'postgres', password: 'postradius', port: 5432, database: 'app_development'
-end
-
-puts User.first.name
+	puts "Povoando cliente: #{client.nome } código: #{client.id}"
+	client = Client.create!( name: nome, cpf: cpf, phone: fone, cell: celular, description: obs, rg: rg)
+	address = Address.create!(address: endereco, zip_code: (cep || '6100000'), city: cidade, state: estado, 
+		neighborhood: bairro, client_id: client.id, complement: "mk_auth" )
+end 
