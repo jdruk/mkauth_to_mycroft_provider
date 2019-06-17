@@ -5,8 +5,8 @@ ActiveRecord::Base.establish_connection(
 	:adapter => "postgresql",  
 	:host => "localhost",  
 	:database => "app_development",  
-	:password=> 'postgres', 
-	:username => 'postradius',
+	:password=> 'postradius', 
+	:username => 'postgres',
 	port: 5432				       
 ) 
 
